@@ -92,13 +92,13 @@ end
 -- orange otherwise.
 function Container:display(running)
 
-	metaPrimaryColor = E_META_WOOL_LIGHTBLUE
-	metaSecondaryColor = E_META_WOOL_BLUE
+	metaPrimaryColor = E_META_STAINED_CLAY_LIGHTBLUE
+	metaSecondaryColor = E_META_STAINED_CLAY_BLUE
 
 	if running == false 
 	then
-		metaPrimaryColor = E_META_WOOL_ORANGE
-		metaSecondaryColor = E_META_WOOL_RED
+		metaPrimaryColor = E_META_STAINED_CLAY_ORANGE
+		metaSecondaryColor = E_META_STAINED_CLAY_RED
 	end
 
 	self.displayed = true
@@ -107,34 +107,34 @@ function Container:display(running)
 	do
 		for pz=self.z, self.z+4
 		do
-			setBlock(UpdateQueue,px,GROUND_LEVEL + 1,pz,E_BLOCK_WOOL,metaPrimaryColor)
+			setBlock(UpdateQueue,px,GROUND_LEVEL + 1,pz,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 		end
 	end
 
 	for py = GROUND_LEVEL+2, GROUND_LEVEL+3
 	do
-		setBlock(UpdateQueue,self.x+1,py,self.z,E_BLOCK_WOOL,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x+1,py,self.z,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 
 		-- leave empty space for the door
-		-- setBlock(UpdateQueue,self.x+2,py,self.z,E_BLOCK_WOOL,metaPrimaryColor)
+		-- setBlock(UpdateQueue,self.x+2,py,self.z,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 		
-		setBlock(UpdateQueue,self.x,py,self.z,E_BLOCK_WOOL,metaPrimaryColor)
-		setBlock(UpdateQueue,self.x+3,py,self.z,E_BLOCK_WOOL,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x,py,self.z,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x+3,py,self.z,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 
-		setBlock(UpdateQueue,self.x,py,self.z+1,E_BLOCK_WOOL,metaSecondaryColor)
-		setBlock(UpdateQueue,self.x+3,py,self.z+1,E_BLOCK_WOOL,metaSecondaryColor)
+		setBlock(UpdateQueue,self.x,py,self.z+1,E_BLOCK_STAINED_CLAY,metaSecondaryColor)
+		setBlock(UpdateQueue,self.x+3,py,self.z+1,E_BLOCK_STAINED_CLAY,metaSecondaryColor)
 
-		setBlock(UpdateQueue,self.x,py,self.z+2,E_BLOCK_WOOL,metaPrimaryColor)
-		setBlock(UpdateQueue,self.x+3,py,self.z+2,E_BLOCK_WOOL,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x,py,self.z+2,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x+3,py,self.z+2,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 
-		setBlock(UpdateQueue,self.x,py,self.z+3,E_BLOCK_WOOL,metaSecondaryColor)
-		setBlock(UpdateQueue,self.x+3,py,self.z+3,E_BLOCK_WOOL,metaSecondaryColor)
+		setBlock(UpdateQueue,self.x,py,self.z+3,E_BLOCK_STAINED_CLAY,metaSecondaryColor)
+		setBlock(UpdateQueue,self.x+3,py,self.z+3,E_BLOCK_STAINED_CLAY,metaSecondaryColor)
 
-		setBlock(UpdateQueue,self.x,py,self.z+4,E_BLOCK_WOOL,metaPrimaryColor)
-		setBlock(UpdateQueue,self.x+3,py,self.z+4,E_BLOCK_WOOL,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x,py,self.z+4,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x+3,py,self.z+4,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 
-		setBlock(UpdateQueue,self.x+1,py,self.z+4,E_BLOCK_WOOL,metaPrimaryColor)
-		setBlock(UpdateQueue,self.x+2,py,self.z+4,E_BLOCK_WOOL,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x+1,py,self.z+4,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
+		setBlock(UpdateQueue,self.x+2,py,self.z+4,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 	end
 
 	-- torch
@@ -170,7 +170,7 @@ function Container:display(running)
 	do
 		for pz=self.z, self.z+4
 		do
-			setBlock(UpdateQueue,px,GROUND_LEVEL + 4,pz,E_BLOCK_WOOL,metaPrimaryColor)
+			setBlock(UpdateQueue,px,GROUND_LEVEL + 4,pz,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 		end	
 	end
 
@@ -195,6 +195,17 @@ end
 -- value displayed on Container's sign
 function Container:updateCPUSign(s)
 	updateSign(UpdateQueue,self.x+1,GROUND_LEVEL + 2,self.z - 1,"CPU usage","",s,"")
+	val_integer, floating_part = s:match("([^\.]+)\.([^\.]+)")
+	print("New CPU value is:", val_integer)
+	value = tonumber(val_integer)
+	if value < 50 then
+		color = E_META_STAINED_GLASS_GREEN
+	elseif value < 80 then
+		color = E_META_STAINED_CLAY_ORANGE
+	else
+		color = E_META_STAINED_CLAY_RED	
+	end
+	setBlock(UpdateQueue,self.x+1,GROUND_LEVEL + 3,self.z,E_BLOCK_STAINED_GLASS, color)
 end
 
 -- Container:addGround creates ground blocks
@@ -208,7 +219,7 @@ function Container:addGround()
 		do
 			for z=GROUND_MIN_Z,GROUND_MAX_Z
 			do
-				setBlock(UpdateQueue,x,y,z,E_BLOCK_WOOL,E_META_WOOL_WHITE)
+				setBlock(UpdateQueue,x,y,z,E_BLOCK_STAINED_CLAY,E_META_STAINED_CLAY_WHITE)
 			end
 		end	
 	end

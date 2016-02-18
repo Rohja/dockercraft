@@ -12,7 +12,9 @@ RUN cd /go/src/gosetup; go install
 # Download Cuberite server (Minecraft C++ server)
 # and load up a special empty world for Dockercraft
 WORKDIR /srv
-RUN sh -c "$(wget -qO - https://raw.githubusercontent.com/cuberite/cuberite/master/easyinstall.sh)" && mv Server cuberite_server
+RUN wget --no-check-certificate https://builds.cuberite.org/job/Cuberite%20Linux%20x64%20Master/lastSuccessfulBuild/artifact/Cuberite.tar.gz
+RUN tar xvzf Cuberite.tar.gz
+RUN mv Server cuberite_server
 COPY ./world world
 COPY ./docs/img/logo64x64.png logo.png
 

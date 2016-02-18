@@ -184,7 +184,7 @@ function WorldStarted(World)
 	do
 		for z=GROUND_MIN_Z,GROUND_MAX_Z
 		do
-			setBlock(UpdateQueue,x,y,z,E_BLOCK_WOOL,E_META_WOOL_WHITE)
+			setBlock(UpdateQueue,x,y,z,E_BLOCK_STAINED_CLAY,E_META_STAINED_CLAY_WHITE)
 		end
 	end	
 end
