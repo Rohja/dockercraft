@@ -198,14 +198,15 @@ function Container:updateCPUSign(s)
 	val_integer, floating_part = s:match("([^\.]+)\.([^\.]+)")
 	print("New CPU value is:", val_integer)
 	value = tonumber(val_integer)
-	if value < 50 then
-		color = E_META_STAINED_GLASS_GREEN
-	elseif value < 80 then
-		color = E_META_STAINED_CLAY_ORANGE
-	else
-		color = E_META_STAINED_CLAY_RED	
+	for i=1,5,1 do
+		if (i * 20) < value then
+			color = E_META_STAINED_CLAY_RED
+		else
+			color = E_META_STAINED_CLAY_GREEN
+		end
+		setBlock(UpdateQueue,self.x+1,GROUND_LEVEL + i,self.z,E_BLOCK_STAINED_CLAY, color)
 	end
-	setBlock(UpdateQueue,self.x+1,GROUND_LEVEL + 3,self.z,E_BLOCK_STAINED_GLASS, color)
+	
 end
 
 -- Container:addGround creates ground blocks
