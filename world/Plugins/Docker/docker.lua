@@ -3,7 +3,7 @@
 UpdateQueue = nil
 -- array of container objects
 Containers = {}
--- 
+--
 SignsToUpdate = {}
 
 -- as a lua array cannot contain nil values, we store references to this object
@@ -43,7 +43,7 @@ function Initialize(Plugin)
 	-- make all players admin
 	cRankManager:SetDefaultRank("Admin")
 
-	
+
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
 
 	return true
@@ -58,6 +58,20 @@ function updateStats(id, mem, cpu)
 		then
 			Containers[i]:updateMemSign(mem)
 			Containers[i]:updateCPUSign(cpu)
+			break
+		end
+	end
+end
+
+-- updateProgressBar update color of wall behind the
+-- corresponding sign
+function updateProgressBar(id, mem, cpu)
+	for i=1, table.getn(Containers)
+	do
+		if Containers[i] ~= EmptyContainerSpace and Containers[i].id == id
+		then
+			Containers[i]:updateMemBar(mem)
+			Containers[i]:updateCPUBar(cpu)
 			break
 		end
 	end
@@ -101,7 +115,7 @@ function destroyContainer(id)
 			-- remove the container from the world
 			Containers[i]:destroy()
 			-- if the container being removed is the last element of the array
-			-- we reduce the size of the "Container" array, but if it is not, 
+			-- we reduce the size of the "Container" array, but if it is not,
 			-- we store a reference to the "EmptyContainerSpace" object at the
 			-- same index to indicate this is a free space now.
 			-- We use a reference to this object because it is not possible to
@@ -158,7 +172,7 @@ function updateContainer(id,name,imageRepo,imageTag,state)
 			index = i
 			break
 		end
-		x = x + CONTAINER_OFFSET_X			
+		x = x + CONTAINER_OFFSET_X
 	end
 
 	container = NewContainer()
@@ -186,7 +200,7 @@ function WorldStarted(World)
 		do
 			setBlock(UpdateQueue,x,y,z,E_BLOCK_STAINED_CLAY,E_META_STAINED_CLAY_WHITE)
 		end
-	end	
+	end
 end
 
 --
@@ -200,7 +214,7 @@ function PlayerJoined(Player)
 	LOG("executed: goproxy containers -> " .. tostring(r))
 end
 
--- 
+--
 function PlayerUsingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX, CursorY, CursorZ, BlockType, BlockMeta)
 	LOG("Using block: " .. tostring(BlockX) .. "," .. tostring(BlockY) .. "," .. tostring(BlockZ) .. " - " .. tostring(BlockType) .. " - " .. tostring(BlockMeta))
 
@@ -219,7 +233,7 @@ function PlayerUsingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX, Cu
 				Player:SendMessage("docker stop " .. string.sub(containerID,1,8))
 				r = os.execute("goproxy exec?cmd=docker+stop+" .. containerID)
 			-- start
-			else 
+			else
 				Player:SendMessage("docker start " .. string.sub(containerID,1,8))
 				os.execute("goproxy exec?cmd=docker+start+" .. containerID)
 			end
@@ -236,7 +250,7 @@ function PlayerUsingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX, Cu
 		if running
 		then
 			Player:SendMessage("A running container can't be removed.")
-		else 
+		else
 			Player:SendMessage("docker rm " .. string.sub(containerID,1,8))
 			os.execute("goproxy exec?cmd=docker+rm+" .. containerID)
 		end
@@ -277,7 +291,7 @@ function DockerCommand(Split, Player)
 					EntireCommand = table.concat(Split, "+")
 					-- remove '/' at the beginning
 					command = string.sub(EntireCommand, 2, -1)
-					
+
 					r = os.execute("goproxy exec?cmd=" .. command)
 
 					LOG("executed: " .. command .. " -> " .. tostring(r))
@@ -292,7 +306,7 @@ end
 
 
 function HandleRequest_Docker(Request)
-	
+
 	content = "[dockerclient]"
 
 	if Request.PostParams["action"] ~= nil then
@@ -300,7 +314,7 @@ function HandleRequest_Docker(Request)
 		action = Request.PostParams["action"]
 
 		-- receiving informations about one container
-		
+
 		if action == "containerInfos"
 		then
 			LOG("EVENT - containerInfos")
@@ -371,6 +385,7 @@ function HandleRequest_Docker(Request)
 			ram = Request.PostParams["ram"]
 
 			updateStats(id,ram,cpu)
+			updateProgressBar(id, ram, cpu)
 		end
 
 
@@ -413,10 +428,9 @@ function OnServerPing(ClientHandle, ServerDescription, OnlinePlayers, MaxPlayers
 		end
 	end
 	return false, ServerDescription, OnlinePlayers, MaxPlayers, Favicon
-end				
+end
 
 -- Make it sunny all the time!
 function OnWeatherChanging(World, Weather)
 	return true, wSunny
 end
-

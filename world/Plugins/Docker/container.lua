@@ -25,6 +25,8 @@ function NewContainer()
 			display=Container.display,
 			updateMemSign=Container.updateMemSign,
 			updateCPUSign=Container.updateCPUSign,
+			updateMemBar=Container.updateMemBar,
+			updateCPUBar=Container.updateCPUBar,
 			addGround=Container.addGround
 		}
 	return c
@@ -191,22 +193,18 @@ function Container:updateMemSign(s)
 	updateSign(UpdateQueue,self.x,GROUND_LEVEL + 2,self.z - 1,"Mem usage","",s,"")
 end
 
+function Container:updateMemBar(s)
+	updateBar(UpdateQueue, self.x-1, GROUND_LEVEL + 1, self.z, s)
+end
+
 -- Container:updateCPUSign updates the mem usage
 -- value displayed on Container's sign
 function Container:updateCPUSign(s)
 	updateSign(UpdateQueue,self.x+1,GROUND_LEVEL + 2,self.z - 1,"CPU usage","",s,"")
-	val_integer, floating_part = s:match("([^\.]+)\.([^\.]+)")
-	print("New CPU value is:", val_integer)
-	value = tonumber(val_integer)
-	for i=1,5,1 do
-		if (i * 20) < value then
-			color = E_META_STAINED_CLAY_RED
-		else
-			color = E_META_STAINED_CLAY_GREEN
-		end
-		setBlock(UpdateQueue,self.x+1,GROUND_LEVEL + i,self.z,E_BLOCK_STAINED_CLAY, color)
-	end
+end
 
+function Container:updateCPUBar(s)
+	updateBar(UpdateQueue, self.x, GROUND_LEVEL + 1, self.z, s)
 end
 
 -- Container:addGround creates ground blocks

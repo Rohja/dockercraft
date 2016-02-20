@@ -26,8 +26,8 @@ function NewUpdateQueue()
 			then
 			return NewError(1,"NewUpdate: wrong update type")
 		end
-		
-		if delay == nil 
+
+		if delay == nil
 			then
 			delay = 0
 		end
@@ -46,16 +46,16 @@ function NewUpdateQueue()
 			elseif self.op == UPDATE_SIGN
 			then
 				cRoot:Get():GetDefaultWorld():SetSignLines(self.x,self.y,self.z,self.meta.line1,self.meta.line2,self.meta.line3,self.meta.line4)
-			else 
+			else
 				return NewError(1,"update:exec: unknown update type: " .. tostring(self.op))
 			end
 		end
 
 		if self.first == nil
-		then 
+		then
 			self.first = update
 			self.last = update
-		else 
+		else
 			self.last.next = update
 			self.last = update
 		end
@@ -63,8 +63,8 @@ function NewUpdateQueue()
 
     -- update triggers updates starting from
     -- the first one. It stops when the limit
-    -- is reached, of if there are no more 
-    -- operations in the queue. It returns 
+    -- is reached, of if there are no more
+    -- operations in the queue. It returns
     -- the amount of updates executed.
     -- When an update has a delay > 0, the delay
     -- is decremented, and the number of updates
@@ -78,18 +78,18 @@ function NewUpdateQueue()
 			if self.current.delay == 0
 			then
 				err = self.current:exec()
-				if err ~= nil 
+				if err ~= nil
 				then
 					LOG("queue:update error: " .. err.message)
 					break
 				end
-				
-				if self.current == self.first 
-				then 
+
+				if self.current == self.first
+				then
 					self.first = self.current.next
 				end
 				n = n + 1
-			else 
+			else
 				self.current.delay = self.current.delay - 1
 			end
 			self.current = self.current.next
@@ -101,22 +101,35 @@ function NewUpdateQueue()
     return queue
 end
 
--- setBlock adds an update in given queue to 
+-- setBlock adds an update in given queue to
 -- set a block at x,y,z coordinates
 function setBlock(queue,x,y,z,blockID,meta)
 	queue:newUpdate(UPDATE_SET, x, y, z, blockID, meta)
 end
 
--- setBlock adds an update in given queue to 
+-- setBlock adds an update in given queue to
 -- remove a block at x,y,z coordinates
 function digBlock(queue,x,y,z)
 	queue:newUpdate(UPDATE_DIG, x, y, z)
 end
 
--- setBlock adds an update in given queue to 
+-- setBlock adds an update in given queue to
 -- update a sign at x,y,z coordinates with
 -- 4 lines of text
 function updateSign(queue,x,y,z,line1,line2,line3,line4,delay)
 	meta = {line1=line1,line2=line2,line3=line3,line4=line4}
 	queue:newUpdate(UPDATE_SIGN, x, y, z, nil, meta, delay)
+end
+
+function updateBar(queue, x, y, z, s)
+	val_integer, floating_part = s:match("([^\.]+)\.([^\.]+)")
+	value = tonumber(val_integer)
+	for i=1,5,1 do
+		if (i * 20) < value then
+			color = E_META_STAINED_CLAY_RED
+		else
+			color = E_META_STAINED_CLAY_GREEN
+		end
+		setBlock(queue,x+1,GROUND_LEVEL + i,z,E_BLOCK_STAINED_CLAY, color)
+	end
 end
