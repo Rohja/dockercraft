@@ -11,9 +11,9 @@ CONTAINER_STOPPED = 2
 -- the Minecraft world
 function NewContainer()
 	c = {
-			displayed = false, 
-			x = 0, 
-			z = 0, 
+			displayed = false,
+			x = 0,
+			z = 0,
 			name="",
 			id="",
 			imageRepo="",
@@ -36,10 +36,10 @@ Container = {displayed = false, x = 0, z = 0, name="",id="",imageRepo="",imageTa
 function Container:init(x,z)
 	self.x = x
 	self.z = z
-	self.displayed = false	
+	self.displayed = false
 end
 
--- Container:setInfos sets Container's id, name, imageRepo, 
+-- Container:setInfos sets Container's id, name, imageRepo,
 -- image tag and running state
 function Container:setInfos(id,name,imageRepo,imageTag,running)
 	self.id = id
@@ -49,7 +49,7 @@ function Container:setInfos(id,name,imageRepo,imageTag,running)
 	self.running = running
 end
 
--- Container:destroy removes all blocks of the 
+-- Container:destroy removes all blocks of the
 -- container, it won't be visible on the map anymore
 function Container:destroy(running)
 	X = self.x+2
@@ -82,27 +82,27 @@ function Container:destroy(running)
 			for pz=self.z-1, self.z+5
 			do
 				digBlock(UpdateQueue,px,py,pz)
-			end	
+			end
 		end
 	end
 end
 
 -- Container:display displays all Container's blocks
--- Blocks will be blue if the container is running, 
+-- Blocks will be blue if the container is running,
 -- orange otherwise.
 function Container:display(running)
 
 	metaPrimaryColor = E_META_STAINED_CLAY_LIGHTBLUE
 	metaSecondaryColor = E_META_STAINED_CLAY_BLUE
 
-	if running == false 
+	if running == false
 	then
 		metaPrimaryColor = E_META_STAINED_CLAY_ORANGE
 		metaSecondaryColor = E_META_STAINED_CLAY_RED
 	end
 
 	self.displayed = true
-	
+
 	for px=self.x, self.x+3
 	do
 		for pz=self.z, self.z+4
@@ -111,13 +111,13 @@ function Container:display(running)
 		end
 	end
 
-	for py = GROUND_LEVEL+2, GROUND_LEVEL+3
+	for py = GROUND_LEVEL+2, GROUND_LEVEL+4
 	do
 		setBlock(UpdateQueue,self.x+1,py,self.z,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 
 		-- leave empty space for the door
 		-- setBlock(UpdateQueue,self.x+2,py,self.z,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
-		
+
 		setBlock(UpdateQueue,self.x,py,self.z,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 		setBlock(UpdateQueue,self.x+3,py,self.z,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
 
@@ -170,8 +170,8 @@ function Container:display(running)
 	do
 		for pz=self.z, self.z+4
 		do
-			setBlock(UpdateQueue,px,GROUND_LEVEL + 4,pz,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
-		end	
+			setBlock(UpdateQueue,px,GROUND_LEVEL + 5,pz,E_BLOCK_STAINED_CLAY,metaPrimaryColor)
+		end
 	end
 
 	setBlock(UpdateQueue,self.x+3,GROUND_LEVEL + 2,self.z - 1,E_BLOCK_WALLSIGN,E_META_CHEST_FACING_ZM)
@@ -206,14 +206,14 @@ function Container:updateCPUSign(s)
 		end
 		setBlock(UpdateQueue,self.x+1,GROUND_LEVEL + i,self.z,E_BLOCK_STAINED_CLAY, color)
 	end
-	
+
 end
 
 -- Container:addGround creates ground blocks
 -- necessary to display the container
 function Container:addGround()
 	if GROUND_MIN_X > self.x - 2
-	then 
+	then
 		OLD_GROUND_MIN_X = GROUND_MIN_X
 		GROUND_MIN_X = self.x - 2
 		for x= GROUND_MIN_X, OLD_GROUND_MIN_X
@@ -222,6 +222,6 @@ function Container:addGround()
 			do
 				setBlock(UpdateQueue,x,y,z,E_BLOCK_STAINED_CLAY,E_META_STAINED_CLAY_WHITE)
 			end
-		end	
+		end
 	end
 end
